@@ -1,0 +1,126 @@
+{
+  "profile": {
+    "name": "Reyhan Chill",
+    "role": "Full Stack Developer",
+    "bio": "Building end-to-end digital systems — from pixel-perfect interfaces to resilient backend architecture. Focused on elegant solutions to real-world problems.",
+    "location": "London, UK",
+    "email": "reyhanchill@gmail.com",
+    "github": "https://github.com/reyhanchill",
+    "linkedin": "https://linkedin.com/in/hrc20",
+    "resume": "https://drive.google.com/file/d/YOUR_CV_FILE_ID/view"
+  },
+  "stats": [
+    { "id": "s1", "num": "3+",  "label": "YEARS EXPERIENCE", "sub": "ACTIVELY BUILDING" },
+    { "id": "s2", "num": "10+", "label": "PROJECTS SHIPPED",  "sub": "FULL STACK" },
+    { "id": "s3", "num": "BSc", "label": "COMPUTER SCIENCE",  "sub": "ASTON UNIVERSITY · 2026" },
+    { "id": "s4", "num": "OPEN\nTO WORK", "label": "AVAILABLE NOW", "sub": "LONDON · REMOTE", "highlight": true }
+  ],
+  "projects": [
+    {
+      "id": "p1",
+      "pos": 0,
+      "status": "SHIPPED",
+      "type": "FULL STACK",
+      "title": "TAXFLOW",
+      "description": "An AI-powered tax calculator built to help users optimise their tax position in real time.",
+      "fullDescription": "Taxflow simplifies tax planning for individuals and businesses. It combines a React frontend with a Node.js backend to deliver fast, accurate calculations with AI-driven deduction recommendations.",
+      "tech": ["React", "Node.js", "MongoDB", "AWS"],
+      "images": [],
+      "link": "https://github.com/reyhanchill",
+      "live": "https://tax-calculator-psi-five.vercel.app/",
+      "keyFeatures": [
+        "Real-time tax calculations",
+        "AI-driven deduction recommendations",
+        "Multi-jurisdiction support",
+        "Accounting software integration",
+        "Secure document storage"
+      ]
+    },
+    {
+      "id": "p2",
+      "pos": 1,
+      "status": "SHIPPED",
+      "type": "FULL STACK",
+      "title": "E-COMMERCE + CHATBOT",
+      "description": "A full-stack e-commerce platform with an NLP-powered chatbot built into the shopping experience.",
+      "fullDescription": "Built with Django and PostgreSQL, this platform handles product listings, orders, and payments. The integrated chatbot handles customer queries, suggests products, and tracks orders using natural language processing.",
+      "tech": ["Python", "Django", "PostgreSQL", "Docker"],
+      "images": [],
+      "link": "https://github.com/reyhanchill",
+      "live": "",
+      "keyFeatures": [
+        "NLP chatbot for support and recommendations",
+        "Real-time inventory management",
+        "Secure payment gateway",
+        "Product search and filtering",
+        "Order tracking"
+      ]
+    },
+    {
+      "id": "p3",
+      "pos": 2,
+      "status": "SHIPPED",
+      "type": "BACKEND",
+      "title": "MOSQUE COMMUNITY HUB",
+      "description": "A community platform built for a local mosque, serving 500+ users with prayer times, events, and online donations.",
+      "fullDescription": "A full-stack community website that keeps worshippers informed and connected. Admins manage content through a JWT-secured CMS, while users get real-time prayer times, upcoming events, and a Stripe-powered donation system.",
+      "tech": ["JavaScript", "Express", "MongoDB", "JWT"],
+      "images": [],
+      "link": "",
+      "live": "",
+      "keyFeatures": [
+        "Real-time prayer times via Aladhan API",
+        "Hijri calendar and countdown",
+        "Event management system",
+        "Stripe donations with receipts",
+        "JWT-secured admin CMS"
+      ]
+    },
+    {
+      "id": "p4",
+      "pos": 3,
+      "status": "ACTIVE",
+      "type": "FULL STACK",
+      "title": "THIS PORTFOLIO",
+      "description": "A Matrix-themed developer portfolio built with React and Firebase — content updates live without redeploying.",
+      "fullDescription": "Designed and built from scratch with a cyberpunk HUD aesthetic. Firebase Firestore drives all content — projects, skills, and stats update instantly from the console with no code changes. Features a bento project layout with live site previews, Framer Motion transitions, and a fully responsive design.",
+      "tech": ["React", "Firebase", "Framer Motion", "CSS3", "React Router"],
+      "images": [],
+      "link": "https://github.com/reyhanchill/portfolio",
+      "live": "https://reyhanchill.xyz",
+      "keyFeatures": [
+        "Firebase live content — no redeployment needed",
+        "Bento layout with live iframe previews",
+        "Framer Motion page transitions",
+        "Animated Matrix rain canvas",
+        "Fully responsive"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "sk1",
+      "pos": 0,
+      "category": "FRONTEND",
+      "items": ["React", "JavaScript", "TypeScript", "Next.js", "HTML5", "CSS3"]
+    },
+    {
+      "id": "sk2",
+      "pos": 1,
+      "category": "BACKEND",
+      "items": ["Node.js", "Python", "Express", "Django", "REST APIs", "GraphQL"]
+    },
+    {
+      "id": "sk3",
+      "pos": 2,
+      "category": "DATABASE",
+      "items": ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Firebase"]
+    },
+    {
+      "id": "sk4",
+      "pos": 3,
+      "category": "TOOLS & CLOUD",
+      "items": ["Git", "Docker", "AWS", "CI/CD", "Jest", "Webpack"]
+    }
+  ]
+}

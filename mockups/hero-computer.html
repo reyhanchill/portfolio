@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hero Computer — Mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g:#00ff41;
+  --gdim:rgba(0,255,65,0.5);
+  --gfaint:rgba(0,255,65,0.07);
+  --black:#050a05;
+  --mono:'JetBrains Mono',monospace;
+  --display:'Orbitron',sans-serif;
+}
+body{background:var(--black);color:var(--g);font-family:var(--mono);min-height:100vh;}
+
+/* ── NAV ── */
+.nav{display:flex;gap:32px;padding:20px 40px;border-bottom:1px solid rgba(0,255,65,0.1);font-size:11px;letter-spacing:0.12em;opacity:0.4;}
+
+/* ── SECTION LABELS ── */
+.concept-label{
+  font-family:var(--display);font-size:10px;letter-spacing:0.2em;
+  color:var(--g);opacity:0.35;padding:40px 60px 16px;
+  border-top:1px solid rgba(0,255,65,0.08);margin-top:60px;
+}
+.concept-label:first-of-type{border-top:none;margin-top:0;}
+.concept-desc{font-size:11px;opacity:0.45;padding:0 60px 32px;line-height:1.8;max-width:700px;}
+
+/* ════════════════════════════════
+   CONCEPT A — MATRIX DECODE SWEEP
+   The rain sweeps left→right,
+   each column decodes on contact
+════════════════════════════════ */
+.concept-a{
+  display:flex;align-items:center;justify-content:center;
+  padding:40px 60px 60px;gap:80px;
+}
+
+.ca-left{flex:1;max-width:620px;position:relative;}
+.ca-rain-canvas{position:absolute;inset:0;pointer-events:none;z-index:0;}
+
+.ca-content{position:relative;z-index:1;}
+.ca-eyebrow{font-size:11px;letter-spacing:0.25em;opacity:0.4;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.ca-eyebrow::before{content:'';display:block;width:40px;height:1px;background:var(--g);opacity:0.4;}
+
+.ca-name{
+  font-family:var(--display);font-size:72px;font-weight:900;
+  line-height:0.95;letter-spacing:-0.02em;
+  color:var(--g);margin-bottom:16px;
+  text-shadow:0 0 40px rgba(0,255,65,0.4);
+}
+.ca-name .char{display:inline-block;transition:color 0.1s;}
+.ca-name .char.scrambled{color:rgba(0,255,65,0.3);}
+.ca-name .char.revealed{color:var(--g);}
+
+.ca-role{font-size:14px;letter-spacing:0.22em;opacity:0.6;margin-bottom:28px;}
+.ca-role .char.scrambled{opacity:0.2;}
+.ca-role .char.revealed{opacity:0.6;}
+
+.ca-bio{font-size:12px;line-height:2;opacity:0;max-width:480px;margin-bottom:36px;transition:opacity 0.8s;}
+.ca-bio.visible{opacity:0.6;}
+
+.ca-actions{display:flex;gap:16px;opacity:0;transition:opacity 0.8s;}
+.ca-actions.visible{opacity:1;}
+
+.btn-p{
+  background:var(--g);color:#000;border:none;cursor:pointer;
+  padding:13px 28px;font-family:var(--display);font-size:10px;font-weight:700;
+  letter-spacing:0.12em;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);
+}
+.btn-g{
+  background:transparent;color:var(--g);border:1px solid rgba(0,255,65,0.5);cursor:pointer;
+  padding:13px 28px;font-family:var(--display);font-size:10px;
+  letter-spacing:0.12em;
+}
+
+/* right side stat cards */
+.ca-right{display:flex;flex-direction:column;gap:12px;min-width:300px;}
+.ca-stat{
+  border:1px solid rgba(0,255,65,0.15);padding:14px 20px;
+  display:flex;align-items:center;gap:16px;
+  opacity:0;transform:translateX(20px);transition:opacity 0.5s,transform 0.5s;
+}
+.ca-stat.visible{opacity:1;transform:translateX(0);}
+.ca-stat-num{font-family:var(--display);font-size:24px;font-weight:700;min-width:56px;}
+.ca-stat-label{font-size:10px;opacity:0.7;letter-spacing:0.1em;}
+.ca-stat-sub{font-size:9px;opacity:0.3;margin-top:2px;}
+
+/* ════════════════════════════════
+   CONCEPT B — RETRO CRT COMPUTER
+   All content lives INSIDE the
+   computer screen, boots up on load
+════════════════════════════════ */
+.concept-b{
+  display:flex;align-items:center;justify-content:center;
+  padding:20px 60px 60px;
+}
+
+.cb-wrap{display:flex;flex-direction:column;align-items:center;width:100%;max-width:860px;}
+
+.cb-monitor{
+  position:relative;
+  background:linear-gradient(160deg,#222a22 0%,#161c16 100%);
+  border:4px solid #2e3d2e;
+  border-radius:16px 16px 6px 6px;
+  padding:28px 28px 36px;
+  width:100%;
+  box-shadow:
+    inset 0 0 30px rgba(0,0,0,0.7),
+    0 8px 40px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(0,255,65,0.06),
+    0 0 60px rgba(0,255,65,0.04);
+}
+
+/* screws */
+.cb-screw{position:absolute;width:9px;height:9px;border-radius:50%;background:#111;border:1.5px solid #2e3d2e;}
+.cb-screw::after{content:'';position:absolute;inset:1px;border-top:1.5px solid #3a4a3a;border-radius:50%;transform:rotate(45deg);}
+.cb-screw.tl{top:10px;left:10px} .cb-screw.tr{top:10px;right:10px}
+.cb-screw.bl{bottom:10px;left:10px} .cb-screw.br{bottom:10px;right:10px}
+
+.cb-screen{
+  position:relative;
+  background:#020902;
+  border:3px solid #0d1a0d;
+  border-radius:8px;
+  overflow:hidden;
+  min-height:340px;
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,0.95),
+    inset 0 0 20px rgba(0,255,65,0.06),
+    0 0 20px rgba(0,255,65,0.1);
+}
+
+/* phosphor glow vignette */
+.cb-screen::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,0.6) 100%);
+  pointer-events:none;z-index:3;
+}
+
+/* scanlines */
+.cb-scanlines{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 4px);
+  animation:flicker 10s infinite;
+}
+@keyframes flicker{0%,94%,100%{opacity:1}95%{opacity:0.88}97%{opacity:1}98.5%{opacity:0.92}}
+
+.cb-inner{position:relative;z-index:1;padding:32px 40px 36px;}
+
+/* boot sequence lines */
+.cb-boot{font-size:10px;opacity:0;margin-bottom:24px;line-height:2;}
+.cb-boot.show{animation:fadein 0.4s forwards;}
+@keyframes fadein{to{opacity:0.35}}
+.cb-boot span{display:block;}
+
+.cb-divider{height:1px;background:rgba(0,255,65,0.15);margin:20px 0 24px;opacity:0;transition:opacity 0.4s;}
+.cb-divider.show{opacity:1;}
+
+.cb-eyebrow-b{font-size:10px;letter-spacing:0.28em;opacity:0;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.cb-eyebrow-b::before{content:'';width:36px;height:1px;background:var(--g);opacity:0.4;}
+.cb-eyebrow-b.show{animation:fadein2 0.6s 0.1s forwards;}
+@keyframes fadein2{to{opacity:0.4}}
+
+.cb-name-b{
+  font-family:var(--display);font-size:52px;font-weight:900;
+  line-height:1;color:var(--g);margin-bottom:10px;
+  text-shadow:0 0 30px rgba(0,255,65,0.5),0 0 60px rgba(0,255,65,0.2);
+  opacity:0;letter-spacing:-0.01em;
+}
+.cb-name-b.show{animation:slideup 0.7s 0.1s cubic-bezier(.16,1,.3,1) forwards;}
+@keyframes slideup{to{opacity:1;transform:translateY(0)}from{transform:translateY(12px)}}
+
+.cb-role-b{font-size:12px;letter-spacing:0.22em;opacity:0;margin-bottom:20px;}
+.cb-role-b.show{animation:fadein2 0.5s 0.2s forwards;}
+
+.cb-bio-b{font-size:11px;line-height:2;opacity:0;max-width:520px;margin-bottom:28px;color:rgba(0,255,65,0.6);}
+.cb-bio-b.show{animation:fadein2 0.6s 0.2s forwards;}
+
+.cb-actions-b{display:flex;gap:14px;opacity:0;}
+.cb-actions-b.show{animation:fadein2 0.5s 0.3s forwards;}
+
+/* cursor blink in screen */
+.cb-cursor{display:inline-block;width:8px;height:14px;background:var(--g);animation:cblink 0.7s step-end infinite;vertical-align:middle;margin-left:4px;}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* progress bar during boot */
+.cb-progress{
+  height:2px;background:rgba(0,255,65,0.1);margin:16px 0;border-radius:1px;overflow:hidden;
+  opacity:0;transition:opacity 0.3s;
+}
+.cb-progress.show{opacity:1;}
+.cb-progress-bar{height:100%;background:var(--g);width:0;transition:width 1.8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px var(--g);}
+.cb-progress-bar.go{width:100%;}
+
+.cb-badge{text-align:center;font-family:var(--display);font-size:9px;letter-spacing:0.22em;color:#3a4a3a;margin-top:12px;}
+.cb-neck{width:80px;height:18px;background:linear-gradient(to bottom,#1e261e,#161c16);border-left:3px solid #2e3d2e;border-right:3px solid #2e3d2e;}
+.cb-base{
+  background:linear-gradient(160deg,#1e261e,#141a14);
+  border:3px solid #2e3d2e;border-radius:6px;
+  padding:12px 20px 14px;width:100%;max-width:920px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.5);
+}
+.cb-keys{display:grid;grid-template-columns:repeat(50,1fr);gap:3px;margin-bottom:6px;}
+.cb-key{height:11px;background:#111;border:1px solid #2e3d2e;border-radius:2px;box-shadow:0 2px 0 #0a0f0a;}
+.cb-spacebar{width:38%;height:11px;background:#111;border:1px solid #2e3d2e;border-radius:2px;box-shadow:0 2px 0 #0a0f0a;margin:0 auto;}
+</style>
+</head>
+<body>
+
+<!-- ─────────────────── CONCEPT A ─────────────────── -->
+<div class="concept-label">CONCEPT A — MATRIX DECODE SWEEP</div>
+<div class="concept-desc">Matrix rain sweeps left → right across the hero. As each column of rain passes, it "decodes" the name and role from scrambled matrix chars into real text. Bio and buttons fade in after the sweep completes. Stat cards slide in from the right.</div>
+
+<div class="concept-a">
+  <canvas class="ca-rain-canvas" id="rainCanvas"></canvas>
+
+  <div class="ca-left">
+    <div class="ca-content">
+      <div class="ca-eyebrow" id="eyebrow">PORTFOLIO 2025</div>
+      <h1 class="ca-name" id="caName"></h1>
+      <div class="ca-role" id="caRole"></div>
+      <p class="ca-bio" id="caBio">Building end-to-end digital systems — from pixel-perfect interfaces to resilient backend architecture. Focused on elegant solutions to real-world problems.</p>
+      <div class="ca-actions" id="caActions">
+        <button class="btn-p">VIEW PROJECTS</button>
+        <button class="btn-g">[ CONTACT ]</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ca-right">
+    <div class="ca-stat" id="stat0">
+      <div class="ca-stat-num">3+</div>
+      <div><div class="ca-stat-label">YEARS EXPERIENCE</div><div class="ca-stat-sub">ACTIVELY BUILDING</div></div>
+    </div>
+    <div class="ca-stat" id="stat1">
+      <div class="ca-stat-num">10+</div>
+      <div><div class="ca-stat-label">PROJECTS SHIPPED</div><div class="ca-stat-sub">FULL STACK</div></div>
+    </div>
+    <div class="ca-stat" id="stat2">
+      <div class="ca-stat-num">BSc</div>
+      <div><div class="ca-stat-label">COMPUTER SCIENCE</div><div class="ca-stat-sub">ASTON UNIVERSITY · 2026</div></div>
+    </div>
+    <div class="ca-stat" id="stat3" style="border-color:rgba(0,255,65,0.4);background:rgba(0,255,65,0.05)">
+      <div class="ca-stat-num" style="font-size:10px;line-height:1.5">OPEN<br/>TO WORK</div>
+      <div><div class="ca-stat-label">AVAILABLE NOW</div><div class="ca-stat-sub">LONDON · REMOTE</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────── CONCEPT B ─────────────────── -->
+<div class="concept-label">CONCEPT B — RETRO CRT BOOT</div>
+<div class="concept-desc">All hero content lives inside the retro CRT monitor. On first visit a boot sequence plays: BIOS lines scroll, a progress bar loads, then the screen decodes into your name/role/bio/buttons. The keyboard sits below.</div>
+
+<div class="concept-b">
+  <div class="cb-wrap">
+    <div class="cb-monitor">
+      <div class="cb-screw tl"></div><div class="cb-screw tr"></div>
+      <div class="cb-screw bl"></div><div class="cb-screw br"></div>
+
+      <div class="cb-screen">
+        <div class="cb-scanlines"></div>
+        <div class="cb-inner">
+
+          <!-- Boot lines -->
+          <div class="cb-boot" id="boot1">
+            <span>RC-2000 BIOS v1.4.2 — INITIALISING...</span>
+            <span>MEMORY CHECK: 640K OK</span>
+            <span>LOADING PORTFOLIO.EXE</span>
+          </div>
+
+          <div class="cb-progress" id="cbProgress">
+            <div class="cb-progress-bar" id="cbBar"></div>
+          </div>
+
+          <div class="cb-boot" id="boot2">
+            <span>IDENTITY MODULE........ <span style="color:var(--g)">OK</span></span>
+            <span>SKILLS DATABASE........ <span style="color:var(--g)">OK</span></span>
+            <span>CONTACT PROTOCOL....... <span style="color:var(--g)">OK</span></span>
+          </div>
+
+          <div class="cb-divider" id="cbDiv"></div>
+
+          <div class="cb-eyebrow-b" id="cbEyebrow">PORTFOLIO 2026</div>
+
+          <div class="cb-name-b" id="cbName">REYHAN CHILL<span class="cb-cursor" id="cbCursor" style="display:none"></span></div>
+
+          <div class="cb-role-b" id="cbRole">FULL STACK DEVELOPER</div>
+
+          <p class="cb-bio-b" id="cbBio">Building end-to-end digital systems — from pixel-perfect interfaces to resilient backend architecture. Focused on elegant solutions to real-world problems.</p>
+
+          <div class="cb-actions-b" id="cbActions">
+            <button class="btn-p">VIEW PROJECTS</button>
+            <button class="btn-g">[ CONTACT ]</button>
+          </div>
+
+        </div>
+      </div>
+      <div class="cb-badge">RC-2000 · PERSONAL COMPUTER</div>
+    </div>
+    <div class="cb-neck"></div>
+    <div class="cb-base">
+      <div class="cb-keys" id="cbKeys"></div>
+      <div class="cb-spacebar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONCEPT A: Rain decode sweep ──
+const CHARS = 'ｦｧｨｩｪｫｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+const rand = () => CHARS[Math.floor(Math.random() * CHARS.length)];
+
+// Build char spans for name and role
+const NAME = 'REYHAN CHILL';
+const ROLE = 'FULL STACK DEVELOPER';
+
+const nameEl = document.getElementById('caName');
+const roleEl = document.getElementById('caRole');
+
+NAME.split('').forEach(c => {
+  const s = document.createElement('span');
+  s.className = 'char scrambled';
+  s.textContent = c === ' ' ? ' ' : rand();
+  s.dataset.real = c;
+  nameEl.appendChild(s);
+});
+ROLE.split('').forEach(c => {
+  const s = document.createElement('span');
+  s.className = 'char scrambled';
+  s.textContent = c === ' ' ? ' ' : rand();
+  s.dataset.real = c;
+  roleEl.appendChild(s);
+});
+
+// Canvas rain
+const canvas = document.getElementById('rainCanvas');
+const caLeft = document.querySelector('.ca-left');
+function resizeCanvas() {
+  canvas.width = caLeft.offsetWidth;
+  canvas.height = caLeft.offsetHeight;
+}
+resizeCanvas();
+const ctx = canvas.getContext('2d');
+const fontSize = 14;
+const cols = Math.floor(canvas.width / fontSize);
+const drops = Array(cols).fill(0);
+let rainActive = true;
+
+// Track which x positions have been "swept"
+const swept = new Set();
+
+function drawRain() {
+  if (!rainActive) return;
+  ctx.fillStyle = 'rgba(5,10,5,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = `${fontSize}px 'JetBrains Mono'`;
+  drops.forEach((y, i) => {
+    const x = i * fontSize;
+    ctx.fillStyle = `rgba(0,255,65,${Math.random() * 0.4 + 0.1})`;
+    ctx.fillText(rand(), x, y * fontSize);
+    drops[i] = y > canvas.height / fontSize && Math.random() > 0.975 ? 0 : y + 1;
+    // Mark this column as swept when rain reaches mid-screen
+    if (y * fontSize > canvas.height * 0.3 && !swept.has(i)) {
+      swept.add(i);
+      revealAtColumn(x);
+    }
+  });
+}
+
+function revealAtColumn(x) {
+  // Reveal name chars near this x position
+  const allChars = [...nameEl.querySelectorAll('.char'), ...roleEl.querySelectorAll('.char')];
+  allChars.forEach(ch => {
+    const rect = ch.getBoundingClientRect();
+    const leftRect = caLeft.getBoundingClientRect();
+    const relX = rect.left - leftRect.left;
+    if (Math.abs(relX - x) < fontSize * 2 && ch.classList.contains('scrambled')) {
+      // Scramble a few times then reveal
+      let scrambles = 0;
+      const iv = setInterval(() => {
+        if (scrambles < 4) {
+          ch.textContent = rand();
+          scrambles++;
+        } else {
+          ch.textContent = ch.dataset.real === ' ' ? ' ' : ch.dataset.real;
+          ch.classList.remove('scrambled');
+          ch.classList.add('revealed');
+          clearInterval(iv);
+        }
+      }, 60);
+    }
+  });
+}
+
+let rainInterval = setInterval(drawRain, 33);
+
+// After sweep completes, show bio + actions + stats
+setTimeout(() => {
+  document.getElementById('caBio').classList.add('visible');
+  document.getElementById('caActions').classList.add('visible');
+}, 2800);
+[0,1,2,3].forEach(i => {
+  setTimeout(() => document.getElementById('stat'+i).classList.add('visible'), 2800 + i*150);
+});
+
+// Fade rain canvas out after 4s
+setTimeout(() => {
+  rainActive = false;
+  clearInterval(rainInterval);
+  canvas.style.transition = 'opacity 1.5s';
+  canvas.style.opacity = '0';
+}, 4000);
+
+
+// ── CONCEPT B: Boot sequence ──
+const cbKeys = document.getElementById('cbKeys');
+for(let i=0;i<50;i++){const k=document.createElement('div');k.className='cb-key';cbKeys.appendChild(k);}
+
+function cbAnimate() {
+  const boot1 = document.getElementById('boot1');
+  const cbProgress = document.getElementById('cbProgress');
+  const cbBar = document.getElementById('cbBar');
+  const boot2 = document.getElementById('boot2');
+  const cbDiv = document.getElementById('cbDiv');
+  const cbEyebrow = document.getElementById('cbEyebrow');
+  const cbName = document.getElementById('cbName');
+  const cbRole = document.getElementById('cbRole');
+  const cbBio = document.getElementById('cbBio');
+  const cbActions = document.getElementById('cbActions');
+  const cbCursor = document.getElementById('cbCursor');
+
+  // Reset
+  [boot1,boot2,cbDiv,cbEyebrow,cbName,cbRole,cbBio,cbActions,cbProgress].forEach(el => {
+    el.classList.remove('show','visible');
+    if(el.classList.contains('cb-progress-bar')) el.style.width='0';
+  });
+  cbBar.classList.remove('go');
+  cbCursor.style.display='none';
+
+  setTimeout(() => { boot1.classList.add('show'); }, 400);
+  setTimeout(() => { cbProgress.classList.add('show'); setTimeout(() => cbBar.classList.add('go'), 50); }, 1100);
+  setTimeout(() => { boot2.classList.add('show'); }, 2100);
+  setTimeout(() => { cbDiv.classList.add('show'); }, 2900);
+  setTimeout(() => { cbEyebrow.classList.add('show'); }, 3200);
+  setTimeout(() => { cbCursor.style.display='inline-block'; cbName.classList.add('show'); }, 3500);
+  setTimeout(() => { cbRole.classList.add('show'); }, 4100);
+  setTimeout(() => { cbBio.classList.add('show'); }, 4500);
+  setTimeout(() => { cbActions.classList.add('show'); cbCursor.style.display='none'; }, 5000);
+}
+
+// Run concept B after a brief delay (so A plays first)
+setTimeout(cbAnimate, 500);
+</script>
+</body>
+</html>
