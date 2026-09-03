@@ -112,12 +112,12 @@ function App() {
         <div className="hud-bar" role="status" aria-label="System status">
           <span className="hud-item"><span className="hud-dot" />ONLINE</span>
           <span className="hud-sep">·</span>
-          <span className="hud-item">STACK: MERN</span>
+          <span className="hud-item">SOFTWARE ENGINEER</span>
           <span className="hud-sep">·</span>
           <span className="hud-item">BUILD: v2.0.0</span>
           <span className="hud-sep">·</span>
           <span className="hud-item">LONDON, UK</span>
-          <span className="hud-item hud-right">reyhan.dev © {year}</span>
+          <span className="hud-item hud-right">reyhanchill.dev © {year}</span>
         </div>
       </div>
     </Router>
