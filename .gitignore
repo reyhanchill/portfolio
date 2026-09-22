@@ -21,3 +21,7 @@ yarn-error.log*
 
 # Editor
 .vscode/
+
+# Administrative credentials (keep outside the repository)
+*service-account*.json
+*serviceAccount*.json

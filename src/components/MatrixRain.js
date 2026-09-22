@@ -1,68 +1,51 @@
 import React, { useEffect, useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
 
 const MatrixRain = () => {
   const canvasRef = useRef(null);
-
+  const reducedMotion = useReducedMotion();
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-
-    const FONT_SIZE = 13;
-    let width, height, columns, drops;
-
+    const ctx = canvas?.getContext('2d');
+    if (!ctx) return;
+    if (reducedMotion) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+    const fontSize = 13;
+    let width, height, drops, interval, resizeTimer;
     const init = () => {
-      width   = canvas.width  = window.innerWidth;
-      height  = canvas.height = window.innerHeight;
-      columns = Math.floor(width / FONT_SIZE);
-      drops   = Array.from({ length: columns }, () => Math.random() * -100);
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      drops = Array.from({ length: Math.floor(width / fontSize) }, () => Math.random() * -100);
     };
-
     init();
-
-    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
     const draw = () => {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
       ctx.fillRect(0, 0, width, height);
-
-      ctx.fillStyle = '#00ff00';
-      ctx.font = `${FONT_SIZE}px monospace`;
-
-      for (let i = 0; i < drops.length; i++) {
-        const char = CHARS[Math.floor(Math.random() * CHARS.length)];
-        ctx.fillText(char, i * FONT_SIZE, drops[i] * FONT_SIZE);
-
-        if (drops[i] * FONT_SIZE > height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
+      ctx.fillStyle = '#00ff41';
+      ctx.font = `${fontSize}px monospace`;
+      drops.forEach((drop, i) => {
+        ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, drop * fontSize);
+        drops[i] = drop * fontSize > height && Math.random() > 0.975 ? 0 : drop + 1;
+      });
     };
-
-    const interval = setInterval(draw, 33);
-
-    let resizeTimer;
+    const updateVisibility = () => {
+      clearInterval(interval);
+      if (!document.hidden) interval = setInterval(draw, 33);
+    };
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(init, 150);
     };
-
+    updateVisibility();
+    document.addEventListener('visibilitychange', updateVisibility);
     window.addEventListener('resize', handleResize, { passive: true });
-
     return () => {
       clearInterval(interval);
       clearTimeout(resizeTimer);
+      document.removeEventListener('visibilitychange', updateVisibility);
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="matrix-rain"
-      aria-hidden="true"
-    />
-  );
+  }, [reducedMotion]);
+  return <canvas ref={canvasRef} className="matrix-rain" aria-hidden="true" />;
 };
-
 export default MatrixRain;

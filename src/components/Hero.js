@@ -1,71 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getStats, getProfile } from '../services/portfolio';
+import { getStats } from '../services/portfolio';
 import fallback from '../data/portfolio.json';
+import { IconDb, IconCode, IconGraduation, IconBriefcase } from './Icons';
 
-const Hero = () => {
-  const [stats, setStats]     = useState(fallback.stats);
-  const [profile, setProfile] = useState(fallback.profile);
+const CARD_ICONS = { database: IconDb, code: IconCode, graduation: IconGraduation, briefcase: IconBriefcase };
 
+const Hero = ({ profile = fallback.profile }) => {
+  const [stats, setStats] = useState(fallback.stats);
   useEffect(() => {
-    getStats().then(setStats);
-    getProfile().then(setProfile);
+    let active = true;
+    getStats().then(data => { if (active) setStats(data); });
+    return () => { active = false; };
   }, []);
-
-  const resumeUrl = profile?.resume || '#';
 
   return (
     <section id="home" className="hero-section">
       <div className="hero-grid">
-
-        {/* Left — identity */}
         <div className="hud-frame">
           <div className="hud-tl" /><div className="hud-tr" />
           <div className="hud-bl" /><div className="hud-br" />
-
           <div className="hero-eyebrow">WAKE UP,</div>
-          <h1 className="hero-name" data-text="REYHAN CHILL">REYHAN CHILL</h1>
-          <div className="hero-role">FULL STACK DEVELOPER</div>
-
-          <p className="hero-bio">
-            Building end-to-end digital systems — from pixel-perfect interfaces
-            to resilient backend architecture. Focused on elegant solutions to
-            real-world problems.
-          </p>
-
+          <h1 className="hero-name" aria-label={profile.name} data-text={profile.name.toUpperCase()}>{profile.name.toUpperCase()}</h1>
+          <div className="hero-role">{profile.role}</div>
+          <p className="hero-bio">{profile.bio}</p>
           <div className="hero-actions">
-            <Link to="/projects">
-              <button className="btn-primary">VIEW PROJECTS</button>
-            </Link>
-            <Link to="/contact">
-              <button className="btn-ghost">[ CONTACT ]</button>
-            </Link>
-            <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
-              <button className="btn-cv">↓ RÉSUMÉ</button>
-            </a>
+            <Link to="/projects" className="btn-primary">VIEW PROJECTS</Link>
+            <Link to="/contact" className="btn-ghost">[ CONTACT ]</Link>
+            {profile.resume && <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="btn-cv">↓ RÉSUMÉ</a>}
           </div>
         </div>
-
-        {/* Right — stat cards from Firebase */}
         <div className="stat-panel">
-          {stats.map((s, i) => (
-            <div key={s.id || i} className={`stat-card${s.highlight ? ' stat-card--highlight' : ''}`}>
-              <div className="stat-num" style={s.highlight ? { fontSize: '11px', lineHeight: 1.5, minWidth: 60 } : {}}>
-                {s.num.split('\n').map((line, j) => (
-                  <React.Fragment key={j}>{line}{j < s.num.split('\n').length - 1 && <br/>}</React.Fragment>
-                ))}
+          {stats.map(stat => {
+            const Icon = CARD_ICONS[stat.icon];
+            return (
+              <div key={stat.id} className={`stat-card${stat.highlight ? ' stat-card--highlight' : ''}`}>
+                <div className="stat-icon"><Icon size={32} /></div>
+                <div>
+                  <div className="stat-label">{stat.label}</div>
+                  <div className="stat-sub">{stat.sub}</div>
+                </div>
               </div>
-              <div>
-                <div className="stat-label">{s.label}</div>
-                <div className="stat-sub">{s.sub}</div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-
       </div>
     </section>
   );
 };
-
 export default Hero;

@@ -1,109 +1,97 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import fallback from '../data/portfolio.json';
+import { sendContact, validateContact } from '../services/contact';
 
-const Contact = () => {
+const Contact = ({ profile = fallback.profile }) => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState('');
+  const [error, setError] = useState('');
+  const pending = useRef(null);
+  useEffect(() => () => { pending.current?.abort(); pending.current = null; }, []);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = event => {
+    setForm(current => ({ ...current, [event.target.name]: event.target.value }));
+    if (status !== 'sending') { setStatus(''); setError(''); }
+  };
+  const handleSubmit = async event => {
+    event.preventDefault();
+    if (pending.current) return;
+    const validation = validateContact(form);
+    if (validation) { setError(validation); setStatus('error'); return; }
+    const controller = new AbortController();
+    pending.current = controller;
     setStatus('sending');
+    setError('');
+    const timeout = setTimeout(() => controller.abort(), 15000);
     try {
-      const res = await fetch('https://formsubmit.co/ajax/reyhanchill@gmail.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          message: form.message,
-          _subject: `Portfolio message from ${form.name}`,
-        }),
-      });
-      if (res.ok) {
-        setStatus('success');
-        setForm({ name: '', email: '', message: '' });
-        setTimeout(() => setStatus(''), 6000);
-      } else { setStatus('error'); }
-    } catch { setStatus('error'); }
+      await sendContact(form, profile.email, controller.signal);
+      if (pending.current !== controller) return;
+      setStatus('success');
+      setForm({ name: '', email: '', message: '' });
+    } catch {
+      if (pending.current !== controller) return;
+      setError('Your message could not be sent. Please try again or email me directly.');
+      setStatus('error');
+    } finally {
+      clearTimeout(timeout);
+      if (pending.current === controller) pending.current = null;
+    }
   };
 
   return (
     <section id="contact">
       <div className="section-header">
-        <span className="section-num">04</span>
-        <h2 className="section-title">CONTACT</h2>
+        <span className="section-num" aria-hidden="true">03</span>
+        <h1 className="section-title">CONTACT</h1>
         <div className="section-rule" />
       </div>
-
       <div className="contact-grid">
-
-        {/* Form */}
-        <form className="contact-form" onSubmit={handleSubmit} noValidate>
+        <form className="contact-form" onSubmit={handleSubmit} aria-busy={status === 'sending'}>
           <div className="form-group">
             <label htmlFor="name">NAME</label>
-            <input id="name" name="name" type="text" value={form.name} onChange={handleChange} autoComplete="name" required />
+            <input id="name" name="name" type="text" value={form.name} onChange={handleChange} autoComplete="name" maxLength={100} disabled={status === 'sending'} required />
           </div>
           <div className="form-group">
             <label htmlFor="email">EMAIL</label>
-            <input id="email" name="email" type="email" value={form.email} onChange={handleChange} autoComplete="email" required />
+            <input id="email" name="email" type="email" value={form.email} onChange={handleChange} autoComplete="email" maxLength={254} disabled={status === 'sending'} required />
           </div>
           <div className="form-group">
             <label htmlFor="message">MESSAGE</label>
-            <textarea id="message" name="message" value={form.message} onChange={handleChange} required />
+            <textarea id="message" name="message" value={form.message} onChange={handleChange} maxLength={5000} disabled={status === 'sending'} required />
           </div>
-
-          <button type="submit" className="btn-primary" disabled={status === 'sending'} style={{ alignSelf: 'flex-start', marginTop: 4 }}>
+          <button type="submit" className="btn-primary contact-submit" disabled={status === 'sending'}>
             {status === 'sending' ? 'SENDING...' : 'SEND MESSAGE'}
           </button>
-
-          {status === 'success' && (
-            <p className="form-status form-status--success">
-              &gt; Message sent. I'll get back to you soon._
-            </p>
-          )}
-          {status === 'error' && (
-            <p className="form-status form-status--error">
-              &gt; Error sending. Please email me directly.
-            </p>
-          )}
+          <p className={`form-status${status === 'error' ? ' form-status--error' : ' form-status--success'}`} role="status" aria-live="polite" aria-atomic="true">
+            {status === 'sending' && 'Sending your message…'}
+            {status === 'success' && "Message sent. I'll get back to you soon."}
+            {status === 'error' && error}
+          </p>
         </form>
-
-        {/* Info sidebar */}
         <div className="contact-info">
           <div className="contact-info-card">
             <div className="contact-info-label">EMAIL</div>
-            <div className="contact-info-value">
-              <a href="mailto:reyhanchill@gmail.com">reyhanchill@gmail.com</a>
-            </div>
+            <div className="contact-info-value"><a href={`mailto:${profile.email}`}>{profile.email}</a></div>
           </div>
           <div className="contact-info-card">
             <div className="contact-info-label">GITHUB</div>
-            <div className="contact-info-value">
-              <a href="https://github.com/reyhanchill" target="_blank" rel="noopener noreferrer">github.com/reyhanchill</a>
-            </div>
+            <div className="contact-info-value"><a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.github.replace('https://', '')}</a></div>
           </div>
           <div className="contact-info-card">
             <div className="contact-info-label">LINKEDIN</div>
-            <div className="contact-info-value">
-              <a href="https://linkedin.com/in/hrc20" target="_blank" rel="noopener noreferrer">linkedin.com/in/hrc20</a>
-            </div>
+            <div className="contact-info-value"><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">{profile.linkedin.replace('https://', '')}</a></div>
           </div>
           <div className="contact-info-card">
             <div className="contact-info-label">LOCATION</div>
-            <div className="contact-info-value">London, UK · Available Remote</div>
+            <div className="contact-info-value">{profile.location} · Available remote</div>
           </div>
-          <div className="contact-info-card" style={{ borderColor: 'rgba(0,255,65,0.35)' }}>
+          <div className="contact-info-card contact-info-card--highlight">
             <div className="contact-info-label">STATUS</div>
-            <div className="contact-info-value" style={{ color: 'var(--g)', textShadow: '0 0 8px var(--g)' }}>
-              Open to opportunities
-            </div>
+            <div className="contact-info-value">{profile.availability}</div>
           </div>
         </div>
-
       </div>
     </section>
   );
 };
-
 export default Contact;

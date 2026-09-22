@@ -1,62 +1,81 @@
-/**
- * Seed script — run anytime you add/update content in portfolio.json
- * Usage: node scripts/seed.js
- *
- * To add a new project:  add to "projects" array in portfolio.json, then run this
- * To add a new skill:    add to "skills" array in portfolio.json, then run this
- * To update a stat card: edit "stats" array in portfolio.json, then run this
- */
-require('dotenv').config();
-const { initializeApp } = require('firebase/app');
-const { getFirestore, setDoc, doc, collection } = require('firebase/firestore');
+/** Publish only the four public portfolio collections. Never loosen client rules. */
 const data = require('../src/data/portfolio.json');
+const collectionNames = ['projects', 'skills', 'stats', 'profile'];
 
-const app = initializeApp({
-  apiKey:            process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain:        process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId:         process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket:     process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId:             process.env.REACT_APP_FIREBASE_APP_ID,
-});
-
-const db = getFirestore(app);
-
-async function seed() {
-  console.log('🌱 Seeding Firestore...\n');
-
-  // Projects
-  for (const project of data.projects) {
-    await setDoc(doc(collection(db, 'projects'), project.id), project);
-    console.log(`  ✓ Project: ${project.title}`);
+function desiredCollections(content) {
+  if (!Number.isInteger(content.schemaVersion) || !content.profile?.name) throw new Error('Invalid portfolio schema or profile.');
+  const result = { profile: [{ ...content.profile, id: 'main' }] };
+  for (const name of collectionNames.filter(name => name !== 'profile')) {
+    if (!Array.isArray(content[name]) || !content[name].length) throw new Error(`${name} must be a non-empty array.`);
+    const ids = new Set();
+    result[name] = content[name].map(record => {
+      if (!record.id || typeof record.id !== 'string' || record.id.includes('/') || ids.has(record.id)) throw new Error(`Invalid or duplicate ID in ${name}.`);
+      ids.add(record.id);
+      if (name === 'projects' && (!record.title || !record.description || !Array.isArray(record.tech) || !record.tech.length)) throw new Error(`Incomplete project: ${record.id}`);
+      if (name === 'skills' && (!record.category || !Array.isArray(record.items) || !record.items.length)) throw new Error(`Incomplete skills: ${record.id}`);
+      if (name === 'stats' && (!record.label || !record.sub || !['database', 'code', 'graduation', 'briefcase'].includes(record.icon))) throw new Error(`Incomplete card: ${record.id}`);
+      return record;
+    });
   }
-
-  // Skills
-  for (const skill of data.skills) {
-    await setDoc(doc(collection(db, 'skills'), skill.id), skill);
-    console.log(`  ✓ Skill:   ${skill.category}`);
-  }
-
-  // Stats
-  for (const stat of data.stats) {
-    await setDoc(doc(collection(db, 'stats'), stat.id), stat);
-    console.log(`  ✓ Stat:    ${stat.label}`);
-  }
-
-  // Profile
-  await setDoc(doc(collection(db, 'profile'), 'main'), data.profile);
-  console.log(`  ✓ Profile: ${data.profile.name}`);
-
-  console.log('\n✅ Done. Firebase is up to date.');
-  console.log('\nTo add more in future:');
-  console.log('  • New project  → add to portfolio.json "projects" array with a new id (e.g. "p5")');
-  console.log('  • New skill    → add to portfolio.json "skills" array with a new id (e.g. "sk5")');
-  console.log('  • Then run:      node scripts/seed.js\n');
-  process.exit(0);
+  return Object.fromEntries(collectionNames.map(name => [name, result[name].map(record => ({ ...record, schemaVersion: content.schemaVersion }))]));
 }
 
-seed().catch(err => {
-  console.error('\n❌ Seed failed:', err.message);
-  console.error('   Make sure Firestore rules allow writes (temporarily set allow write: if true)');
-  process.exit(1);
+function buildPlan(content, existing = {}) {
+  const collections = desiredCollections(content);
+  const operations = [];
+  for (const name of collectionNames) {
+    const ids = new Set(collections[name].map(record => record.id));
+    for (const record of collections[name]) operations.push({ type: 'set', path: `${name}/${record.id}`, data: record });
+    for (const id of existing[name] || []) if (!ids.has(id)) operations.push({ type: 'delete', path: `${name}/${id}` });
+  }
+  if (operations.length > 500) throw new Error('Too many operations for one atomic publication; nothing was written.');
+  return operations;
+}
+
+async function seed() {
+  require('dotenv').config({ quiet: true });
+  const args = process.argv.slice(2);
+  if (args.some(arg => !['--apply', '--check'].includes(arg))) throw new Error('Usage: node scripts/seed.js [--check | --apply]');
+  if (args.includes('--check')) {
+    console.log(`Content validated: ${buildPlan(data).length} records. No database connection or writes.`);
+    return;
+  }
+  const projectId = process.env.FIREBASE_PROJECT_ID || process.env.REACT_APP_FIREBASE_PROJECT_ID;
+  if (!projectId || /^your_/i.test(projectId)) throw new Error('Set FIREBASE_PROJECT_ID to the intended project.');
+  const { initializeApp, applicationDefault, deleteApp } = require('firebase-admin/app');
+  const { getFirestore } = require('firebase-admin/firestore');
+  const credential = applicationDefault();
+  // Fail before starting Firestore requests when administrative sign-in is missing.
+  await credential.getAccessToken();
+  const app = initializeApp({ credential, projectId });
+  const db = getFirestore(app);
+  try {
+    const snapshots = await Promise.all(collectionNames.map(name => db.collection(name).get()));
+    const existing = Object.fromEntries(snapshots.map((snapshot, i) => [collectionNames[i], snapshot.docs.map(doc => doc.id)]));
+    const plan = buildPlan(data, existing);
+    console.log(`Project: ${projectId}`);
+    for (const operation of plan) console.log(`${operation.type.toUpperCase()} ${operation.path}`);
+    if (!args.includes('--apply')) {
+      console.log('Dry run only. Review the project and removals, then run npm run seed -- --apply to publish.');
+      return;
+    }
+    const batch = db.batch();
+    for (const operation of plan) {
+      const ref = db.doc(operation.path);
+      if (operation.type === 'delete') batch.delete(ref);
+      else batch.set(ref, operation.data);
+    }
+    await batch.commit();
+    console.log('Portfolio content published atomically. Refresh the site to load it.');
+  } finally {
+    await db.terminate();
+    await deleteApp(app);
+  }
+}
+
+if (require.main === module) seed().catch(error => {
+  console.error(`Publish failed: ${error.message}`);
+  console.error('Use authorised Application Default Credentials; keep browser writes denied. See README.md.');
+  process.exitCode = 1;
 });
+module.exports = { buildPlan };

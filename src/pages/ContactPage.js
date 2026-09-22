@@ -1,10 +1,10 @@
 import React from 'react';
 import Contact from '../components/Contact';
 
-function ContactPage() {
+function ContactPage({ profile }) {
   return (
     <div>
-      <Contact />
+      <Contact profile={profile} />
     </div>
   );
 }

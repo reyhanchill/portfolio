@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://reyhan.dev/sitemap.xml
+Sitemap: https://reyhanchill.xyz/sitemap.xml
