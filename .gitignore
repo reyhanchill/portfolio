@@ -25,3 +25,5 @@ yarn-error.log*
 # Administrative credentials (keep outside the repository)
 *service-account*.json
 *serviceAccount*.json
+
+.claude/
